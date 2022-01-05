@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
+
+
 <LinearLayout
     android:descendantFocusability="blocksDescendants"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="20dip">
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:orientation="horizontal"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:padding="20dip">
 
     <TextView
         android:focusable="false"
@@ -20,22 +22,25 @@
 
 
     <ImageButton
-        android:focusable="false"
-        android:focusableInTouchMode="false"
+
         android:id="@+id/delete"
         android:layout_width="1dp"
         android:layout_height="38dp"
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        android:visibility="visible"
+        android:src="@android:drawable/ic_delete"
+
+         />
 
     <ImageButton
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:id="@+id/edit"
         android:layout_width="1dp"
         android:layout_height="38dp"
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:src="@android:drawable/ic_menu_edit"
+         />
 
 
 </LinearLayout>
