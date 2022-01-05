@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ListOfBubblesActivity">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent"
+        tools:ignore="MissingConstraints">
+
+     <RelativeLayout
+         android:id="@+id/linearlayout"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"  >
+
+         <ImageButton
+             android:id="@+id/imageButton2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@android:drawable/ic_menu_revert"
+             tools:ignore="MissingConstraints" />
+
+         <ImageButton
+             android:id="@+id/imageButton4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentRight="true"
+             android:src="@android:drawable/ic_popup_sync" />
+
+     </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearlayout"
+            android:text="My Bubbles"
+            />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/textView4"
+        tools:ignore="MissingConstraints">
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            tools:ignore="MissingConstraints">
+
+        </ListView>
+
+    <ListView
+        android:id="@+id/listVieww"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listView"
+        android:gravity="center_horizontal"
+        tools:ignore="MissingConstraints"
+         />
+
+
+
+    </RelativeLayout>
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
