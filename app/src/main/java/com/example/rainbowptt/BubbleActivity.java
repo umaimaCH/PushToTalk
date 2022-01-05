@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BubbleActivity extends AppCompatActivity {
+public class BubbleActivity extends AppCompatActivity implements Room.RoomListener {
     RecyclerView participants;
     EditText addparticipant;
     ImageButton back,add;
@@ -79,7 +79,7 @@ public class BubbleActivity extends AppCompatActivity {
         conf =  myroom.getConference();
         participants.setAdapter(adapter);
         participants.setLayoutManager(new LinearLayoutManager(this));
-        updateParticipantsList();
+        mroom.registerChangeListener(this);
         end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +191,11 @@ public class BubbleActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onDestroy() {
+        mroom.unregisterChangeListener(this);
+        super.onDestroy();
+    }
     private void updateParticipantsList() {
         participants_l.clear();
         participants_names.clear();
@@ -226,4 +231,13 @@ public class BubbleActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void roomUpdated(Room updatedRoom) {
+
+    }
+
+    @Override
+    public void conferenceUpdated(Room updatedRoom) {
+        runOnUiThread(this::updateParticipantsList);
+    }
 }
