@@ -4,6 +4,7 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,10 +18,10 @@
 
     <ImageButton
         android:id="@+id/imageButton"
-        android:layout_width="1dp"
-        android:layout_height="38dp"
+        android:layout_width="3dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        android:src="@drawable/garbage_can" />
 
 
     </LinearLayout>

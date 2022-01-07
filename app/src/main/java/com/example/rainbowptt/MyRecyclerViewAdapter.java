@@ -64,18 +64,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         MyClickListener listener;
         public final TextView wordItemView;
         public final ImageButton delete;
-        //final MyRecyclerViewAdapter mAdapter;
 
         public MyRecyclerViewHolder(@NonNull View itemView, MyClickListener listener) {
             super(itemView);
             delete = itemView.findViewById(R.id.imageButton);
             wordItemView = itemView.findViewById(R.id.item_title);
-            //this.mAdapter = adapter;
-
             this.listener = listener;
             delete.setOnClickListener(this);
-
-
         }
 
         @Override
@@ -87,7 +82,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                     String contact = editText.getText().toString().trim();
                     listener.onDelete(contact);
             }
-
         }
     }
     public interface MyClickListener {

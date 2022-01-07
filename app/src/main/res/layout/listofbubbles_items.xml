@@ -3,7 +3,7 @@
 
 
 
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="blocksDescendants"
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,9 +28,7 @@ android:padding="20dip">
         android:layout_height="38dp"
         android:layout_weight="1"
         android:visibility="visible"
-        android:src="@android:drawable/ic_delete"
-
-         />
+        android:src="@drawable/garbage_can" />
 
     <ImageButton
         android:id="@+id/edit"
@@ -39,8 +37,7 @@ android:padding="20dip">
         android:layout_weight="1"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:src="@android:drawable/ic_menu_edit"
-         />
+        android:src="@drawable/pencil__1_" />
 
 
 </LinearLayout>

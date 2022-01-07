@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textView);
         button = findViewById(R.id.button);
         create_button = findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {

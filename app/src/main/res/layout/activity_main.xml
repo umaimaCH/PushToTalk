@@ -8,14 +8,6 @@
 
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:padding="8dp"
-        android:text="WELCOME"
-        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button"

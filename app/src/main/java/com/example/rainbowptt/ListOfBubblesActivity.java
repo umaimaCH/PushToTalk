@@ -70,6 +70,7 @@ public class ListOfBubblesActivity extends Activity {
 
         bubbles = findViewById(R.id.listView);
         bubbless = findViewById(R.id.listVieww);
+
         ArrayList<Room> pendings = RainbowSdk.instance().bubbles().getPendingList();
         if (pendings.size() != 0) {
             for(Room pending : pendings){

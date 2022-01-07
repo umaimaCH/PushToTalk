@@ -2,12 +2,16 @@ package com.example.rainbowptt;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +36,7 @@ import java.util.Map;
 
 public class BubbleActivity extends AppCompatActivity implements Room.RoomListener {
     RecyclerView participants;
+    TextView isTalking;
     EditText addparticipant;
     ImageButton back,add;
     Button push, end, addp;
@@ -44,6 +49,7 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
     static Room mroom;
     Conference conf;
     String name = "";
+    private GestureDetector mDetector;
 
 
     List<String> participants_namesfinal = new ArrayList<>();
@@ -57,6 +63,7 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         myroom = RainbowSdk.instance().bubbles().findBubbleById(roomId);
         mroom = myroom;
         push = findViewById(R.id.buttonPush);
+        isTalking = findViewById(R.id.textView3);
         addp = findViewById(R.id.button6);
         end = findViewById(R.id.button5);
         back = findViewById(R.id.imageButton9);
@@ -64,6 +71,8 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         addparticipant.setVisibility(View.INVISIBLE);
         addp.setVisibility(View.INVISIBLE);
         add = findViewById(R.id.addButton);
+        push.setBackgroundColor(Color.BLUE);
+        isTalking.setText(" ");
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +88,9 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         conf =  myroom.getConference();
         participants.setAdapter(adapter);
         participants.setLayoutManager(new LinearLayoutManager(this));
-        mroom.registerChangeListener(this);
+        myroom.registerChangeListener(this);
+
+
         end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,59 +109,6 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
             }
         });
 
-
-        push.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RainbowSdk.instance().webRTC().makeConferenceCall(myroom.getConference().getId(), jingleJid);
-            }
-        });
-
-        push.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                RainbowSdk.instance().bubbles().muteAllParticipants(myroom, true, new IConferenceProxy.IToggleMuteStateParticipantListener() {
-                    @SuppressLint("ClickableViewAccessibility")
-                    @Override
-                    public void onToggleMuteStateParticipantSuccess() {
-
-                    }
-
-                    @Override
-                    public void onToggleMuteStateParticipantFailed(IConferenceProxy.ConferenceError error) {
-
-                    }
-                });
-                return true; //indicate we're done listening to this touch listener
-            }
-        });
-
-        push.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        for (ConferenceParticipant pt : participants_l){
-                            if (!pt.isMuted()){
-                                pt.setMuted(true);
-                            }
-                        }
-                        RainbowSdk.instance().bubbles().muteAllParticipants(myroom, true, new IConferenceProxy.IToggleMuteStateParticipantListener() {
-                            @SuppressLint("ClickableViewAccessibility")
-                            @Override
-                            public void onToggleMuteStateParticipantSuccess() {
-                            }
-
-                            @Override
-                            public void onToggleMuteStateParticipantFailed(IConferenceProxy.ConferenceError error) {
-
-                            }
-                        });
-                        return true;
-                }
-                return false;
-            }
-        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +116,12 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
                 addp.setVisibility(View.VISIBLE);
             }
         });
+        mDetector = new GestureDetector(this, new MyGestureListener());
+        push.setOnTouchListener(touchListener);
+
+
+
+
         addp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,20 +152,106 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
                 }
             }
         });
-
-
     }
+    View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    push.setBackgroundColor(Color.BLUE);
+                    ConferenceParticipant pt = mroom.getConference().getMeAsParticipant();
+                    RainbowSdk.instance().webRTC().mute(true,false);
+                    pt.setMuted(true);
+                    isTalking.setText(" ");
+                    Log.i("TAG", "Action_UP " + pt.isMuted());
+                    return true;
+            }
+            return mDetector.onTouchEvent(event);
+
+        }
+    };
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            Log.d("TAG","onDown: ");
+            RainbowSdk.instance().webRTC().makeConferenceCall(myroom.getConference().getId(), jingleJid);
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.i("TAG", "onSingleTapConfirmed: ");
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            push.setBackgroundColor(Color.GRAY);
+            RainbowSdk.instance().webRTC().mute(false,true);
+            ConferenceParticipant pt = mroom.getConference().getMeAsParticipant();
+            pt.setMuted(false);
+            isTalking.setText(pt.getName() + " is Talking");
+            Log.i("TAG", "onLongPress: " + pt.isMuted());
+            RainbowSdk.instance().bubbles().muteAllParticipants(myroom, true, new IConferenceProxy.IToggleMuteStateParticipantListener() {
+                @SuppressLint("ClickableViewAccessibility")
+                @Override
+                public void onToggleMuteStateParticipantSuccess() {
+                    Log.i("TAG", "onLongPress: ");
+                }
+
+                @Override
+                public void onToggleMuteStateParticipantFailed(IConferenceProxy.ConferenceError error) {
+
+                }
+            });
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Log.i("TAG", "onDoubleTap: ");
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+            Log.i("TAG", "onScroll: ");
+            return true;
+        }
+
+
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+            Log.d("TAG", "onFling: ");
+            return true;
+        }
+    }
+
+
+
+
+
     @Override
     public void onDestroy() {
         mroom.unregisterChangeListener(this);
         super.onDestroy();
     }
     private void updateParticipantsList() {
+        isTalking.setText(" ");
         participants_l.clear();
         participants_names.clear();
         participants_l.addAll(conf.getAllParticipants());
         for (ConferenceParticipant pt : participants_l){
             participants_names.add(pt.getName());
+            Log.i("TAG", "update" + pt.isMuted());
+            if(!pt.isMuted()){
+                isTalking.setText(pt.getName() + " is Talking");
+                Log.i("state", "MUUUUUUUUUUUUUUUUUUUUUUUUUUUUUTED" + pt.getName() + pt.isMuted());
+            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -229,6 +279,8 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         });
 
     }
+
+
 
 
     @Override
