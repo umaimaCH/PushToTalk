@@ -40,7 +40,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             @Override
             public void onDelete(String p) {
                 contact = p;
-
                 BubbleActivity.deleteContact();
                 RBLog.warn("LOG_TAG", contact);
             }

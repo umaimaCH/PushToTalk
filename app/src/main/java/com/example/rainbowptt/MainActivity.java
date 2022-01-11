@@ -21,8 +21,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView;
-    private Button button,create_button;
+
+    private Button listOfBubbles_button,createBubble_button;
     private List<Room> roomList = new ArrayList<>();
     private List<IRainbowContact> contactList = new ArrayList<>();
     private IRainbowContact contact;
@@ -30,16 +30,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button = findViewById(R.id.button);
-        create_button = findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
+        listOfBubbles_button = findViewById(R.id.button);
+        createBubble_button = findViewById(R.id.button2);
+        listOfBubbles_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, ListOfBubblesActivity.class);
                 startActivity(i);
             }
         });
-        create_button.setOnClickListener(new View.OnClickListener() {
+        createBubble_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,CreateBubbleActivity.class);

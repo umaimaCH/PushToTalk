@@ -58,8 +58,8 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bubble);
-        roomId = getIntent().getStringExtra(ListOfBubblesActivity.EXTRA_MESSAGE);
-        jingleJid = getIntent().getStringExtra(ListOfBubblesActivity.EXTRA_MESSAGEE);
+        roomId = getIntent().getStringExtra(ListOfBubblesActivity.EXTRA_MESSAGE_Name);
+        jingleJid = getIntent().getStringExtra(ListOfBubblesActivity.EXTRA_MESSAGEE_JID);
         myroom = RainbowSdk.instance().bubbles().findBubbleById(roomId);
         mroom = myroom;
         push = findViewById(R.id.buttonPush);
@@ -118,10 +118,6 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         });
         mDetector = new GestureDetector(this, new MyGestureListener());
         push.setOnTouchListener(touchListener);
-
-
-
-
         addp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +128,6 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
                     RainbowSdk.instance().bubbles().inviteGuestsToBubble(myroom, str_participants, new IRoomProxy.IInviteToJoinRoom() {
                         @Override
                         public void onSuccess(@Nullable Map<String, String> invalidUsers) {
-                            RBLog.warn("LOG_TAG", "TZAAAAAAAAAAAAAAAAAAAAAD");
                         }
 
                         @Override
@@ -142,13 +137,10 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
 
                         @Override
                         public void onFailure(RainbowServiceException exception) {
-                            RBLog.warn("LOG_TAG", "TZAAAAAAAAAAAAAAAAAAAAADCHHHHHHHHHHHHHHHHHHHHHH");
                         }
                     });
                     addparticipant.setVisibility(View.INVISIBLE);
                     addp.setVisibility(View.INVISIBLE);
-
-
                 }
             }
         });
@@ -160,7 +152,7 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
                 case MotionEvent.ACTION_UP:
                     push.setBackgroundColor(Color.BLUE);
                     ConferenceParticipant pt = mroom.getConference().getMeAsParticipant();
-                    RainbowSdk.instance().webRTC().mute(true,false);
+                    RainbowSdk.instance().webRTC().mute(true,true);
                     pt.setMuted(true);
                     isTalking.setText(" ");
                     Log.i("TAG", "Action_UP " + pt.isMuted());
@@ -230,11 +222,6 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
             return true;
         }
     }
-
-
-
-
-
     @Override
     public void onDestroy() {
         mroom.unregisterChangeListener(this);
@@ -247,10 +234,8 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         participants_l.addAll(conf.getAllParticipants());
         for (ConferenceParticipant pt : participants_l){
             participants_names.add(pt.getName());
-            Log.i("TAG", "update" + pt.isMuted());
             if(!pt.isMuted()){
                 isTalking.setText(pt.getName() + " is Talking");
-                Log.i("state", "MUUUUUUUUUUUUUUUUUUUUUUUUUUUUUTED" + pt.getName() + pt.isMuted());
             }
         }
         adapter.notifyDataSetChanged();
@@ -262,14 +247,12 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
         for (ConferenceParticipant pt : searching){
             if (pt.getName().equalsIgnoreCase(MyRecyclerViewAdapter.contact)){
                 jID = pt.getUserId();
-                RBLog.warn("LOG_TAG", "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL" + jID);
             }
         }
         IRainbowContact cont = RainbowSdk.instance().contacts().getContactFromId(jID);
         RainbowSdk.instance().bubbles().deleteParticipantFromBubble(mroom, cont, false, new IRoomProxy.IDeleteParticipantListener() {
             @Override
             public void onDeleteParticipantSuccess(String roomId, String participantIdDeleted) {
-                RBLog.warn("LOG_TAG", "SUCCEEEEESSSSSSSSSSSSSSSSSSSSSSSSSS");
             }
 
             @Override

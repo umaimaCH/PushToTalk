@@ -37,12 +37,11 @@ import java.util.List;
 
 
 public class ListOfBubblesActivity extends Activity {
-    ImageButton back, reload, delete,edit;
-    static String text;
-    ListView bubbles;
-    ListView bubbless;
-    public final static String EXTRA_MESSAGE = "MESSAGE";
-    public final static String EXTRA_MESSAGEE = "MESSAGEE";
+    ImageButton back, reload, edit;
+    ListView activeBubbles;
+    ListView nonActiveBubbles;
+    public final static String EXTRA_MESSAGE_Name = "MESSAGE";
+    public final static String EXTRA_MESSAGEE_JID = "MESSAGEE";
 
 
 
@@ -68,8 +67,8 @@ public class ListOfBubblesActivity extends Activity {
         });
 
 
-        bubbles = findViewById(R.id.listView);
-        bubbless = findViewById(R.id.listVieww);
+        activeBubbles = findViewById(R.id.listView);
+        nonActiveBubbles = findViewById(R.id.listVieww);
 
         ArrayList<Room> pendings = RainbowSdk.instance().bubbles().getPendingList();
         if (pendings.size() != 0) {
@@ -77,12 +76,10 @@ public class ListOfBubblesActivity extends Activity {
                 RainbowSdk.instance().bubbles().acceptInvitation(pending, new IRoomProxy.IChangeUserRoomDataListener() {
                     @Override
                     public void onChangeUserRoomDataSuccess(RoomParticipant roomParticipant) {
-
                     }
 
                     @Override
                     public void onChangeUserRoomDataFailed() {
-
                     }
                 });
             }
@@ -94,7 +91,6 @@ public class ListOfBubblesActivity extends Activity {
             if(room.getConference() != null){
                 if (room.getConference().isConfActive()){
                     call.add(room.getName());
-                    RBLog.warn("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG_TAG", call.toString());
                 }
             }
 
@@ -104,7 +100,7 @@ public class ListOfBubblesActivity extends Activity {
             name.add(room.getName());
         }
         name.removeAll(call);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ListOfBubblesActivity.this,
+        ArrayAdapter<String> adapterAB = new ArrayAdapter<String>(ListOfBubblesActivity.this,
                 R.layout.listofbubbles_items, R.id.bubble_name, call){
             @Override
             public View getView(int position, View convertView, ViewGroup parent){
@@ -114,14 +110,14 @@ public class ListOfBubblesActivity extends Activity {
                 return view;
             }
         };
-        bubbles.setAdapter(adapter);
-        bubbles.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        bubbles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        activeBubbles.setAdapter(adapterAB);
+        activeBubbles.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        activeBubbles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                String roomposition = (String) parent.getAdapter().getItem(position);
-                Room room= RainbowSdk.instance().bubbles().findBubblesByName(roomposition).get(0);
+                String roomPosition = (String) parent.getAdapter().getItem(position);
+                Room room= RainbowSdk.instance().bubbles().findBubblesByName(roomPosition).get(0);
                 String thisRoomName = room.getId();
                 boolean hasMicrophonePermission = hasMicrophonePermission();
                 if(room.isUserOwner()){
@@ -133,8 +129,8 @@ public class ListOfBubblesActivity extends Activity {
                                     //RainbowSdk.instance().webRTC().makeConferenceCall(room.getConference().getId(), jingleJid);
                                     String jID = jingleJid;
                                     Intent intent = new Intent(ListOfBubblesActivity.this, BubbleActivity.class);
-                                    intent.putExtra(EXTRA_MESSAGE, thisRoomName);
-                                    intent.putExtra(EXTRA_MESSAGEE, jID);
+                                    intent.putExtra(EXTRA_MESSAGE_Name, thisRoomName);
+                                    intent.putExtra(EXTRA_MESSAGEE_JID, jID);
                                     startActivity(intent);
                                 }
 
@@ -161,8 +157,8 @@ public class ListOfBubblesActivity extends Activity {
                                 if (room.getConference() != null) {
                                     String jID = jingleJid;
                                     Intent intent = new Intent(ListOfBubblesActivity.this, BubbleActivity.class);
-                                    intent.putExtra(EXTRA_MESSAGE, thisRoomName);
-                                    intent.putExtra(EXTRA_MESSAGEE, jID);
+                                    intent.putExtra(EXTRA_MESSAGE_Name, thisRoomName);
+                                    intent.putExtra(EXTRA_MESSAGEE_JID, jID);
                                     startActivity(intent);
                                 }
                             }
@@ -183,16 +179,15 @@ public class ListOfBubblesActivity extends Activity {
 
             }
         });
-        ArrayAdapter<String> adapterr = new MyListViewAdapter(this, name);
-        //adapterr.notifyDataSetInvalidated();
-        bubbless.setAdapter(adapterr);
-        bubbless.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        bubbless.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ArrayAdapter<String> adapterB = new MyListViewAdapter(this, name);
+        nonActiveBubbles.setAdapter(adapterB);
+        nonActiveBubbles.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        nonActiveBubbles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                String roomposition = (String) parent.getAdapter().getItem(position);
-                Room room= RainbowSdk.instance().bubbles().findBubblesByName(roomposition).get(0);
+                String roomPosition = (String) parent.getAdapter().getItem(position);
+                Room room= RainbowSdk.instance().bubbles().findBubblesByName(roomPosition).get(0);
                 String thisRoomName = room.getId();
                 boolean hasMicrophonePermission = hasMicrophonePermission();
                 if(room.isUserOwner()){
@@ -201,18 +196,16 @@ public class ListOfBubblesActivity extends Activity {
                             @Override
                             public void onJoinAudioCallSuccess(String jingleJid) {
                                 if (room.getConference() != null) {
-                                    //RainbowSdk.instance().webRTC().makeConferenceCall(room.getConference().getId(), jingleJid);
                                     String jID = jingleJid;
                                     Intent intent = new Intent(ListOfBubblesActivity.this, BubbleActivity.class);
-                                    intent.putExtra(EXTRA_MESSAGE, thisRoomName);
-                                    intent.putExtra(EXTRA_MESSAGEE, jID);
+                                    intent.putExtra( EXTRA_MESSAGE_Name, thisRoomName);
+                                    intent.putExtra(EXTRA_MESSAGEE_JID, jID);
                                     startActivity(intent);
                                 }
 
                             }
                             @Override
                             public void onJoinAudioCallFailed(IConferenceProxy.ConferenceError error) {
-                                // do something
                             }
                         });
                     }
@@ -232,8 +225,8 @@ public class ListOfBubblesActivity extends Activity {
                                 if (room.getConference() != null) {
                                     String jID = jingleJid;
                                     Intent intent = new Intent(ListOfBubblesActivity.this, BubbleActivity.class);
-                                    intent.putExtra(EXTRA_MESSAGE, thisRoomName);
-                                    intent.putExtra(EXTRA_MESSAGEE, jID);
+                                    intent.putExtra( EXTRA_MESSAGE_Name, thisRoomName);
+                                    intent.putExtra(EXTRA_MESSAGEE_JID, jID);
                                     startActivity(intent);
                                 }
                             }
@@ -254,39 +247,6 @@ public class ListOfBubblesActivity extends Activity {
 
             }
         });
-
-
-
-        /*delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView txt = v.findViewById(R.id.bubble_name);
-                String text = txt.toString().trim();
-                Room roomyy = RainbowSdk.instance().bubbles().findBubblesByName(text).get(0);
-                RainbowSdk.instance().bubbles().deleteBubble(roomyy, new IRoomProxy.IDeleteRoomListener() {
-                    @Override
-                    public void onRoomDeletedSuccess() {
-                        RBLog.warn("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG_TAG", "bubble deleted");
-                    }
-
-                    @Override
-                    public void onRoomDeletedFailed() {
-                        RBLog.warn("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG_TAG", "nop");
-
-                    }
-                });
-            }
-        });*/
-
-
-/*
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
 
     }
     public boolean hasMicrophonePermission() {
@@ -294,16 +254,14 @@ public class ListOfBubblesActivity extends Activity {
     }
 
     public static void deleteBubble(){
-        Room roomyy = RainbowSdk.instance().bubbles().findBubblesByName(MyListViewAdapter.txt).get(0);
-        RainbowSdk.instance().bubbles().deleteBubble(roomyy, new IRoomProxy.IDeleteRoomListener() {
+        Room myRoom = RainbowSdk.instance().bubbles().findBubblesByName(MyListViewAdapter.txt).get(0);
+        RainbowSdk.instance().bubbles().deleteBubble(myRoom, new IRoomProxy.IDeleteRoomListener() {
             @Override
             public void onRoomDeletedSuccess() {
-                RBLog.warn("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG_TAG", "bubble deleted");
             }
 
             @Override
             public void onRoomDeletedFailed() {
-                RBLog.warn("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG_TAG", "nop");
 
             }
         });
@@ -311,19 +269,17 @@ public class ListOfBubblesActivity extends Activity {
     }
 
     public static void editBubble() {
-        String neew = MyListViewAdapter.nameN;
-        String old = MyListViewAdapter.ancienN;
-        Room roomyy = RainbowSdk.instance().bubbles().findBubblesByName(old).get(0);
-        RainbowSdk.instance().bubbles().changeBubbleData(roomyy,neew,roomyy.getTopic(),true,true,true, roomyy.getAutoRegister(), new IRoomProxy.IChangeRoomDataListener() {
+        String newName = MyListViewAdapter.nameN;
+        String oldName = MyListViewAdapter.ancienN;
+        Room myRoom = RainbowSdk.instance().bubbles().findBubblesByName(oldName).get(0);
+        RainbowSdk.instance().bubbles().changeBubbleData(myRoom,newName,myRoom.getTopic(),true,true,true,myRoom.getAutoRegister(), new IRoomProxy.IChangeRoomDataListener() {
 
             @Override
             public void onChangeRoomDataSuccess(Room room) {
-
             }
 
             @Override
             public void onChangeRoomDataFailed(String roomId) {
-
             }
         });
 
