@@ -40,8 +40,8 @@ public class ListOfBubblesActivity extends Activity {
     ImageButton back, reload, edit;
     ListView activeBubbles;
     ListView nonActiveBubbles;
-    public final static String EXTRA_MESSAGE_Name = "MESSAGE";
-    public final static String EXTRA_MESSAGEE_JID = "MESSAGEE";
+    public final static String EXTRA_MESSAGE_Name = "NAME";
+    public final static String EXTRA_MESSAGEE_JID = "JID";
 
 
 
