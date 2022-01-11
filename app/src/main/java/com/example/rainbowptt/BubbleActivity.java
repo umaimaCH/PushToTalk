@@ -52,7 +52,6 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
     private GestureDetector mDetector;
 
 
-    List<String> participants_namesfinal = new ArrayList<>();
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,18 +253,11 @@ public class BubbleActivity extends AppCompatActivity implements Room.RoomListen
             @Override
             public void onDeleteParticipantSuccess(String roomId, String participantIdDeleted) {
             }
-
             @Override
             public void onDeleteParticipantFailure() {
-
             }
         });
-
     }
-
-
-
-
     @Override
     public void roomUpdated(Room updatedRoom) {
 
